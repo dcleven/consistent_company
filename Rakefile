@@ -27,7 +27,7 @@ Jeweler::Tasks.new do |gem|
   gem.homepage = "http://github.com/dcleven/consistent_company"
   gem.license = "MIT"
   gem.summary = %Q{Normalize a company name for consistent matching}
-  gem.description = %Q{longer description of your gem}
+  gem.description = %Q{Ruby C Extension to normalize a company name. Useful when company names come from various sources.}
   gem.email = "dcleven@marketron.com"
   gem.authors = ["Doug Cleven"]
   gem.version = ConsistentCompany::Version::STRING
@@ -35,8 +35,6 @@ Jeweler::Tasks.new do |gem|
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
-
-
 
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |test|
@@ -46,13 +44,3 @@ Rake::TestTask.new(:test) do |test|
 end
 
 task :default => :test
-
-require 'rake/rdoctask'
-Rake::RDocTask.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
-
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "consistent_company #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
-end

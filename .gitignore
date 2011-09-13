@@ -1,3 +1,7 @@
+Makefile
+.o
+tmp/
+
 # rcov generated
 coverage
 

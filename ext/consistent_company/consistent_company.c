@@ -9,18 +9,15 @@ static int IsCompanyWord(char * inWord);
 char *trimwhitespace(char *str);
 char *str_replace(char *orig, const char *rep, const char *with);
 
-static VALUE rb_mConsistentCompany, rb_cCompanyNamer;
-
-
-static VALUE rb_CompanyNamer_Init(VALUE self)
+static VALUE rb_ConsistentCompany_Init(VALUE self)
 {
 	return self;
 }
 
-//char * BaseString(char * inString)
-static VALUE rb_MakeName(VALUE self, VALUE string)
+
+static VALUE rb_CompanyNamer(VALUE self)
 {
-	char * inString = RSTRING_PTR(string);
+	char * pSelf = RSTRING_PTR(self);
 	
 	// for company only
 	int i;
@@ -28,9 +25,12 @@ static VALUE rb_MakeName(VALUE self, VALUE string)
 	int asc;
 	int numLefts = 0, numRights = 0;
 	int left1 = -1, right1 = -1, left2 = -1, right2 = -1;
+	char workString[500]    = "";
 	char returnString[500]  = "";
-
-	// inString = inString.ToUpper().Trim();
+	char * inString;
+	strcpy(workString, pSelf);
+	inString = workString;
+	
 	for( i = 0; inString[i]; i++)
 		inString[i] = toupper( inString[i] );
 	
@@ -65,13 +65,10 @@ static VALUE rb_MakeName(VALUE self, VALUE string)
 			// ..(xx)..
 			inString[left1++] = ' ';
 			strcpy(&inString[left1], &inString[right1+1]);		
-			
-			//inString = inString.Substring(0, left1) + " " + inString.Substring(right1 + 1);
 		}
 		else
 			// ..(xx
 			inString[left1] = '\0';
-			//inString = inString.Substring(0, left1);
 	}
 	else if (numLefts == 2)
 	{
@@ -82,36 +79,28 @@ static VALUE rb_MakeName(VALUE self, VALUE string)
 			strncpy(inString + left1 + 1, inString + right1 + 1, left2-right1-1);
 			inString[left2] = ' ';
 			strcpy(inString+left2+1, inString + right2+1);
-			//inString = inString.Substring(0, left1) + " " +
-			//	inString.Substring(right1 + 1, left2 - right1 - 1) + " " +
-			//	inString.Substring(right2 + 1);
 		}
 		else if ((left1 < left2) && (left2 < right1) && (right1 < right2))
 		{
 			// ..(xx(xx)xx)..
 			inString[left1] = ' ';
 			strcpy(inString+left1+1, inString+right2+1);
-			//inString = inString.Substring(0, left1) + " " + inString.Substring(right2 + 1);
 		}
 		else if ((left1 < right1) && (right1 < left2) && (right2 == -1))
 		{
 			// ..(xx)..(xx
 			inString[left1] = ' ';
 			strncpy(inString+left1+1, inString+right1+1, left2-right1-1);
-			//inString = inString.Substring(0, left1) + " " +
-			//	inString.Substring(right1 + 1, left2 - right1 - 1);
 		}
 		else if ((left1 < left2) && (left2 < right1) && (right2 == -1))
 		{
 			// ..(xx(xx)xx
 			inString[left1] = '\0';
-			//inString = inString.Substring(0, left1);
 		}
 		else if ((right1 == -1) && (right2 == -1))
 		{
 			// ..(xx(xx
 			inString[left1] = '\0';
-			//inString = inString.Substring(0, left1);
 		}
 	}
 	char singleCharStr[2];
@@ -128,7 +117,6 @@ static VALUE rb_MakeName(VALUE self, VALUE string)
 		{
 			singleCharStr[0] = ch;
 			strcat(returnString, singleCharStr);
-			//returnString = returnString + ch;
 		}
 		else if (asc == 39) // '
 		{ }  // Remove it
@@ -138,10 +126,6 @@ static VALUE rb_MakeName(VALUE self, VALUE string)
 				strcat(returnString, " AND ");
 			else
 				strcat(returnString, "AND ");
-			//if (returnString.Substring(returnString.Length - 1) != " ")
-			//	returnString = returnString + " AND ";
-			//else
-			//	returnString = returnString + "AND ";
 		}
 		else if (asc == 43)  // +
 		{
@@ -154,37 +138,27 @@ static VALUE rb_MakeName(VALUE self, VALUE string)
 				else
 					strcat(returnString, "AND ");
 			}
-
-			//if ((returnString == "A") || (returnString == "A "))
-			//	returnString = "A PLUS ";
-			//else if (returnString.Length > 0)
-			//{
-			//	if (returnString.Substring(returnString.Length - 1) != " ")
-			//		returnString = returnString + " AND ";
-			//	else
-			//		returnString = returnString + "AND ";
-			//}
 		}
 		else if (strlen(returnString) > 0 &&
 			returnString[strlen(returnString)-1] != ' ')
 		{
 			strcat(returnString, " ");
 		}
-		//else if ((returnString.Length > 0) &&
-		//	(returnString.Substring(returnString.Length - 1) != " "))
-		//	returnString = returnString + " ";
 	}
 	char * p;
 	str_replace(returnString, " AND ", " & ");
 	trimwhitespace(returnString);
-	//returnString = returnString.Replace(" AND ", " & ").Trim();
-	
 	strcpy(returnString, TransformCompany(returnString));
-	
 	return rb_str_new2(trimwhitespace(returnString));
+} 
 
-}  // BaseString
-
+/*
+TransformCompany
+given a string transform typical company name parts to common abbreviations
+thereby normailizing the name and making exact matching of different names easier
+example:
+FIRST FEDERAL SAVINGS becomes 1ST FEDERAL SAVINGS 
+*/
 char * TransformCompany(char * resultString)
 {
 	char buf[500] = " ";
@@ -248,8 +222,7 @@ char * TransformCompany(char * resultString)
 	s = trimwhitespace(s);
 	spaceLoc = strstr(s, " ");
 	//spaceLoc = resultString.IndexOf(" ");
-	if (spaceLoc && strlen(resultString) > 3)
-	//if (spaceLoc >= 0 && resultString.Length > 3)  // More than one word and more than 3 chars
+	if (spaceLoc && strlen(resultString) > 3) // More than one word and more than 3 chars
 	{
 		// Check for "A" as the first word, and 
 		// make sure that second word is not an initital or the word "PLUS"
@@ -261,46 +234,40 @@ char * TransformCompany(char * resultString)
 		{
 			strcpy(resultString, resultString+2);
 		}
-		//if (resultString.Substring(0, 2) == "A " &&
-		//	resultString.Substring(2, 1) != "&" &&
-		//	resultString.Substring(3, 1) != " " &&
-		//	resultString.IndexOf("PLUS") != 2)
-		//	resultString = resultString.Substring(2);
 
 		spaceLoc = strrchr(resultString, ' ');
 		//spaceLoc = resultString.LastIndexOf(" ");
 		if (spaceLoc)  // Look at the last word
 		{
 			strcpy(lastWord, spaceLoc + 1);
-			//lastWord = resultString.Substring(spaceLoc + 1);
 			if (IsCompanyWord(lastWord))
 			{
 				*spaceLoc = '\0';
-				//resultString = resultString.Substring(0, spaceLoc);
 				spaceLoc = strrchr(resultString, ' ');
-				//spaceLoc = resultString.LastIndexOf(" ");
 				if (spaceLoc)  // Look at the new last word
 				{
 					strcpy(lastWord, spaceLoc + 1);
-					//lastWord = resultString.Substring(spaceLoc + 1);
 					if (IsCompanyWord(lastWord))
 					{
 						*spaceLoc = '\0';
-						//resultString = resultString.Substring(0, spaceLoc);
 					}
 				}
 			}
 		}
 		if (resultString[strlen(resultString)-1] == '&')
 			resultString[strlen(resultString)-1] = '\0';
-		//if (resultString.Substring(resultString.Length - 1) == "&")
-		//	resultString = resultString.Substring(0, resultString.Length - 1);
 	}
 
 	str_replace(resultString, " ", "");
 	return resultString;
 }
 
+/*
+IsCompanyWord
+returns 1 if the null terminated word passed in inWord 
+is a typical Company word. Add more company words here if desired.
+return 0 if not a Company word
+*/
 int IsCompanyWord(char * inWord)
 {
 	if (strcmp(inWord, "ADV") == 0 ||
@@ -360,7 +327,9 @@ int IsCompanyWord(char * inWord)
 		return 0;
 }  // IsCompanyWord
 
-
+/*
+Trim whitespace from front and back of string
+*/
 char *trimwhitespace(char *str)
 {
   char *end;
@@ -397,9 +366,8 @@ char *str_replace(char *orig, const char *rep, const char *with)
 
 void Init_consistent_company()
 {
-  //rb_require("consistent_company/consistent_company");
-	rb_mConsistentCompany = rb_define_module("ConsistentCompany");
-	rb_cCompanyNamer = rb_define_class_under(rb_mConsistentCompany, "CompanyNamer", rb_cObject);
-	rb_define_method(rb_cCompanyNamer, "initialize", rb_CompanyNamer_Init, 0);
-	rb_define_method(rb_cCompanyNamer, "make", rb_MakeName, 1);
+	VALUE rb_mConsistentCompany = rb_define_module("ConsistentCompany");
+	VALUE string   				= rb_define_class("String", rb_cObject);
+	rb_define_method(rb_mConsistentCompany, "company_namer", rb_CompanyNamer, 0);
+	rb_include_module(string, rb_mConsistentCompany);
 }
