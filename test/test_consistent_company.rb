@@ -21,6 +21,8 @@ class TestConsistentCompany < Test::Unit::TestCase
     assert_equal("TESTERS", %q{The tester's company}.company_namer)
     # empty name
     assert_equal("", "".company_namer)
+    # a very long name
+    assert_equal("A"*1000, ("A"*1000).company_namer)
     
     assert_equal("My Test Advertising Co".company_namer, "MY TEST ADV COMPANY".company_namer)
   end

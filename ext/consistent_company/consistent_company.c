@@ -25,8 +25,8 @@ static VALUE rb_CompanyNamer(VALUE self)
 	int asc;
 	int numLefts = 0, numRights = 0;
 	int left1 = -1, right1 = -1, left2 = -1, right2 = -1;
-	char workString[500]    = "";
-	char returnString[500]  = "";
+	char * workString = malloc(strlen(pSelf)+2);	// 2 extra chars for TransformCompany
+	char * returnString = malloc(strlen(pSelf)+2);
 	char * inString;
 	strcpy(workString, pSelf);
 	inString = workString;
@@ -149,7 +149,10 @@ static VALUE rb_CompanyNamer(VALUE self)
 	str_replace(returnString, " AND ", " & ");
 	trimwhitespace(returnString);
 	strcpy(returnString, TransformCompany(returnString));
-	return rb_str_new2(trimwhitespace(returnString));
+	VALUE return_value = rb_str_new2(trimwhitespace(returnString));
+	free(returnString);
+	free(workString);
+	return return_value;
 } 
 
 /*
@@ -161,15 +164,17 @@ FIRST FEDERAL SAVINGS becomes 1ST FEDERAL SAVINGS
 */
 char * TransformCompany(char * resultString)
 {
-	char buf[500] = " ";
+	// resultString should have been allocated with 2 extra char for our padding here
+	char * buf = malloc(strlen(resultString));
+	strcpy(buf, " ");
 	strcat(buf,resultString);
 	strcat(buf, " ");
 	strcpy(resultString, buf);
-	char lastWord[500] = "";
+	free(buf);
+	
 	char * spaceLoc;
 	char * s = resultString;
 
-	//StringBuilder sb = new StringBuilder(resultString);
 	str_replace(s, " THE ", " ");
 	str_replace(s, " ONE ", " 1 ");
 	str_replace(s, " TWO ", " 2 ");
@@ -239,6 +244,7 @@ char * TransformCompany(char * resultString)
 		//spaceLoc = resultString.LastIndexOf(" ");
 		if (spaceLoc)  // Look at the last word
 		{
+			char * lastWord = malloc(strlen(spaceLoc));
 			strcpy(lastWord, spaceLoc + 1);
 			if (IsCompanyWord(lastWord))
 			{
@@ -253,6 +259,7 @@ char * TransformCompany(char * resultString)
 					}
 				}
 			}
+			free(lastWord);
 		}
 		if (resultString[strlen(resultString)-1] == '&')
 			resultString[strlen(resultString)-1] = '\0';
