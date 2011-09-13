@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require 'bundler'
+
 begin
   Bundler.setup(:default, :development)
 rescue Bundler::BundlerError => e
@@ -11,33 +12,37 @@ rescue Bundler::BundlerError => e
 end
 require 'rake'
 
+require "rake/extensiontask"
+Rake::ExtensionTask.new("consistent_company") do |extension|
+  extension.lib_dir = "lib/consistent_company"
+end
+
+task :build => [:clean, :compile]
+
 require 'jeweler'
+require './lib/consistent_company/version.rb'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "consistent_company"
   gem.homepage = "http://github.com/dcleven/consistent_company"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{Normalize a company name for consistent matching}
+  gem.description = %Q{longer description of your gem}
   gem.email = "dcleven@marketron.com"
   gem.authors = ["Doug Cleven"]
+  gem.version = ConsistentCompany::Version::STRING
+  gem.files.include('lib/consistent_company/*') # add native stuff
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
+
+
 
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |test|
   test.libs << 'lib' << 'test'
   test.pattern = 'test/**/test_*.rb'
   test.verbose = true
-end
-
-require 'rcov/rcovtask'
-Rcov::RcovTask.new do |test|
-  test.libs << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
-  test.rcov_opts << '--exclude "gems/*"'
 end
 
 task :default => :test

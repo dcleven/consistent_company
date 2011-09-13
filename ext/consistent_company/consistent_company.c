@@ -1,7 +1,5 @@
 #include "ruby.h"
-#include "pair.h"
 #include <ctype.h>
-#include "common.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -10,6 +8,9 @@ char * TransformCompany(char * inString);
 static int IsCompanyWord(char * inWord);
 char *trimwhitespace(char *str);
 char *str_replace(char *orig, const char *rep, const char *with);
+
+static VALUE rb_mConsistentCompany, rb_cCompanyNamer;
+
 
 static VALUE rb_CompanyNamer_Init(VALUE self)
 {
@@ -396,9 +397,8 @@ char *str_replace(char *orig, const char *rep, const char *with)
 
 void Init_consistent_company()
 {
-    rb_require("consistent_company/version");
-    rb_mConsistentCompany = rb_define_module("ConsistentCompany");
-
+  //rb_require("consistent_company/consistent_company");
+	rb_mConsistentCompany = rb_define_module("ConsistentCompany");
 	rb_cCompanyNamer = rb_define_class_under(rb_mConsistentCompany, "CompanyNamer", rb_cObject);
 	rb_define_method(rb_cCompanyNamer, "initialize", rb_CompanyNamer_Init, 0);
 	rb_define_method(rb_cCompanyNamer, "make", rb_MakeName, 1);
