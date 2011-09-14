@@ -148,7 +148,7 @@ static VALUE rb_CompanyNamer(VALUE self)
 	}
 	char * p;
 	str_replace(returnString, " AND ", " & ");
-	trimwhitespace(returnString);
+	returnString = trimwhitespace(returnString);
 	strcpy(returnString, TransformCompany(returnString));
 	VALUE return_value = rb_str_new2(trimwhitespace(returnString));
 	free(returnString);
@@ -228,20 +228,20 @@ char * TransformCompany(char * resultString)
 	s = trimwhitespace(s);
 	spaceLoc = strstr(s, " ");
 	//spaceLoc = resultString.IndexOf(" ");
-	if (spaceLoc && strlen(resultString) > 3) // More than one word and more than 3 chars
+	if (spaceLoc && strlen(s) > 3) // More than one word and more than 3 chars
 	{
 		// Check for "A" as the first word, and 
 		// make sure that second word is not an initital or the word "PLUS"
 		// For example: "A C & R" do not remove "A"; "A TOUCH OF CLASS" remove the "A"
-		if (strncmp(resultString, "A ",  3) == 0 &&
-			strncmp(resultString+2, "&", 1) != 0 &&
-			strncmp(resultString+3, " ", 1) != 0 &&
-			strstr(resultString, "PLUS") != resultString + 2)
+		if (strncmp(s, "A ",  2) == 0 &&
+			strncmp(s+2, "&", 1) != 0 &&
+			strncmp(s+3, " ", 1) != 0 &&
+			strstr(s, "PLUS") != s + 2)
 		{
-			strcpy(resultString, resultString+2);
+			strcpy(s, s+2);
 		}
 
-		spaceLoc = strrchr(resultString, ' ');
+		spaceLoc = strrchr(s, ' ');
 		//spaceLoc = resultString.LastIndexOf(" ");
 		if (spaceLoc)  // Look at the last word
 		{
@@ -250,7 +250,7 @@ char * TransformCompany(char * resultString)
 			if (IsCompanyWord(lastWord))
 			{
 				*spaceLoc = '\0';
-				spaceLoc = strrchr(resultString, ' ');
+				spaceLoc = strrchr(s, ' ');
 				if (spaceLoc)  // Look at the new last word
 				{
 					strcpy(lastWord, spaceLoc + 1);
@@ -262,12 +262,12 @@ char * TransformCompany(char * resultString)
 			}
 			free(lastWord);
 		}
-		if (resultString[strlen(resultString)-1] == '&')
-			resultString[strlen(resultString)-1] = '\0';
+		if (s[strlen(s)-1] == '&')
+			s[strlen(s)-1] = '\0';
 	}
 
-	str_replace(resultString, " ", "");
-	return resultString;
+	str_replace(s, " ", "");
+	return s;
 }
 
 /*

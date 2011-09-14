@@ -15,10 +15,12 @@ class TestConsistentCompany < Test::Unit::TestCase
     assert_equal('TEST', " te st ".company_namer)
     # remove Company
     assert_equal("MYTEST", "My Test Company".company_namer)
+    assert_equal("MYCOMPANYTEST", ("MY COMPANY TEST").company_namer)
+    assert_equal("MYTEST", ("MY TEST COMPANY COMP").company_namer)
     # remove leading The
     assert_equal("AAA", "The AAA Company".company_namer)
     # remove punctuation
-    assert_equal("TESTERS", %q{The tester's company}.company_namer)
+    assert_equal("TESTERS", %q{The, ?%^* tester's company!}.company_namer)
     # empty name
     assert_equal("", "".company_namer)
     # a very long name
@@ -31,6 +33,21 @@ class TestConsistentCompany < Test::Unit::TestCase
     assert_equal("BBMM", ("BB(xx)MM(xx").company_namer)
     assert_equal("BB", ("BB(xx(xx)xx").company_namer)
     assert_equal("BB", ("BB(xx(xx").company_namer)
+    
+    # handle and &
+    assert_equal("PRE&POST", ("pre and post").company_namer)
+    assert_equal("PRE&POST", ("pre & post").company_namer)
+    assert_equal("PRE&POST", ("&pre and post&").company_namer)
+    assert_equal("PRE&POST", ("& pre and post &").company_namer)
+    assert_equal("ANDPRE&POSTAND", ("and pre and post and").company_namer)
+    
+    # leading A
+    assert_equal("ABTEST", ("A B TEST").company_namer)
+    assert_equal("BTEST", ("A BTEST").company_namer)
+    assert_equal("APLUSTEST", ("A PLUS TEST").company_namer)
+    assert_equal("APLUSTEST", ("A + TEST").company_namer)
+    assert_equal("APLUSTEST", ("A+ TEST").company_namer)
+    
     assert_equal("My Test Advertising Co".company_namer, "MY TEST ADV COMPANY".company_namer)
   end
 
