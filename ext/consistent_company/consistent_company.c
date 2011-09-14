@@ -77,8 +77,8 @@ static VALUE rb_CompanyNamer(VALUE self)
 			// ..(xx)..(xx)..
 			inString[left1] = ' ';
 			strncpy(inString + left1 + 1, inString + right1 + 1, left2-right1-1);
-			inString[left2] = ' ';
-			strcpy(inString+left2+1, inString + right2+1);
+			inString[left1+1+left2-right1-1]  = ' ';
+			strcpy(inString+left1+1+left2-right1, inString + right2+1);
 		}
 		else if ((left1 < left2) && (left2 < right1) && (right1 < right2))
 		{
@@ -91,6 +91,7 @@ static VALUE rb_CompanyNamer(VALUE self)
 			// ..(xx)..(xx
 			inString[left1] = ' ';
 			strncpy(inString+left1+1, inString+right1+1, left2-right1-1);
+			inString[left1+1+left2-right1] = '\0';
 		}
 		else if ((left1 < left2) && (left2 < right1) && (right2 == -1))
 		{

@@ -23,7 +23,14 @@ class TestConsistentCompany < Test::Unit::TestCase
     assert_equal("", "".company_namer)
     # a very long name
     assert_equal("A"*1000, ("A"*1000).company_namer)
-    
+    # parenthesis matching
+    assert_equal("BBEE", ("BB(xx)EE").company_namer)
+    assert_equal("BB", ("BB(xx").company_namer)
+    assert_equal("BBMMEE", ("BB(xx)MM(xx)EE").company_namer)
+    assert_equal("BBEE", ("BB(xx(xx)xx)EE").company_namer)
+    assert_equal("BBMM", ("BB(xx)MM(xx").company_namer)
+    assert_equal("BB", ("BB(xx(xx)xx").company_namer)
+    assert_equal("BB", ("BB(xx(xx").company_namer)
     assert_equal("My Test Advertising Co".company_namer, "MY TEST ADV COMPANY".company_namer)
   end
 
