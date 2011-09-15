@@ -1,5 +1,5 @@
 Makefile
-.o
+*.[oa]
 tmp/
 
 # rcov generated
@@ -13,7 +13,7 @@ doc
 .yardoc
 
 # bundler
-.bundle
+*.bundle
 
 # jeweler generated
 pkg
