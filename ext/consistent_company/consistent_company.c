@@ -206,6 +206,8 @@ char * TransformCompany(char * resultString)
 	str_replace(s, " AUTOMOTIVE ", " AUTO ");
 	str_replace(s, " AUTOMOBILE ", " AUTO ");
 	str_replace(s, " AUTOS ", " AUTO ");
+	str_replace(s, " AVENUE ", " AVE ");
+	str_replace(s, " DRIVE ", " DR ");
 	str_replace(s, " PHOTOGRAPHY ", " PHOTO ");
 	str_replace(s, " BROTHERS ", " BROS ");
 	str_replace(s, " TECHNOLOGY ", " TEC ");
@@ -366,7 +368,7 @@ char *str_replace(char *orig, const char *rep, const char *with)
 	{
 		strncpy(s, with, strlen(with));
 		strcpy(s+strlen(with), s+strlen(rep));
-		s = s + strlen(with);
+		s = s + strlen(with)-1;
 	}
 	return orig;
 }

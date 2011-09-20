@@ -27,7 +27,10 @@ class TestConsistentCompany < Test::Unit::TestCase
     assert_equal("A"*1000, ("A"*1000).company_namer)
     # parenthesis matching
     assert_equal("BBEE", ("BB(xx)EE").company_namer)
+    assert_equal("BE", ("B(xx)E").company_namer)
+    assert_equal("XX", ("(xx)").company_namer)
     assert_equal("BB", ("BB(xx").company_namer)
+    assert_equal("XX", ("(xx").company_namer)
     assert_equal("BBMMEE", ("BB(xx)MM(xx)EE").company_namer)
     assert_equal("BBEE", ("BB(xx(xx)xx)EE").company_namer)
     assert_equal("BBMM", ("BB(xx)MM(xx").company_namer)
@@ -47,6 +50,9 @@ class TestConsistentCompany < Test::Unit::TestCase
     assert_equal("APLUSTEST", ("A PLUS TEST").company_namer)
     assert_equal("APLUSTEST", ("A + TEST").company_namer)
     assert_equal("APLUSTEST", ("A+ TEST").company_namer)
+    
+    # common name shortening
+    assert_equal("TESTCTRCTRCTR", ("Test Center Center Center").company_namer)
     
     assert_equal("My Test Advertising Co".company_namer, "MY TEST ADV COMPANY".company_namer)
   end
