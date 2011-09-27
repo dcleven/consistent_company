@@ -7,6 +7,7 @@
 char * TransformCompany(char * inString);
 static int IsCompanyWord(char * inWord);
 char *trimwhitespace(char *str);
+char *trimsuffix(char *str, const char *suffix);
 char *str_replace(char *orig, const char *rep, const char *with);
 
 static VALUE rb_ConsistentCompany_Init(VALUE self)
@@ -148,6 +149,7 @@ static VALUE rb_CompanyNamer(VALUE self)
 	}
 	char * p;
 	str_replace(returnString, " AND ", " & ");
+//	returnString = trimsuffix(returnString, "s");
 	returnString = trimwhitespace(returnString);
 	strcpy(returnString, TransformCompany(returnString));
 	VALUE return_value = rb_str_new2(trimwhitespace(returnString));
@@ -359,6 +361,52 @@ char *trimwhitespace(char *str)
 
   return str;
 }
+// 
+// char *trimsuffix(char *str, const char *suffix)
+// {
+// 	char *s = str;
+// 	int len = strlen(suffix);
+// 	while (s=strstr(s, " "))
+// 	{
+// 		if (s != str && s - str > 3 && *(s-1) == 's' )
+// 		{
+// 			*(s-1) = ' ';
+// 		}
+// 		s++;
+// 	}
+// 	return str;
+// }
+
+char *trimsuffix(char *str, const char *suffix)
+{
+	char delims[] = " ";
+	char *result = NULL;
+	char *workString = malloc(strlen(str)+3);
+	char *workBuffer = malloc(strlen(str)+3);
+	strcpy(workString, str);
+	str[0] = '\0';
+	result = strtok(workString, delims);
+	while(result != NULL) 
+	{
+		strcpy(workBuffer, result);
+		int len = strlen(workBuffer);
+		if (len > 3)
+		{
+			if (workBuffer[len-1] == 'S' && strcmp(workBuffer, "PLUS") != 0)
+			{
+				workBuffer[len-1] = '\0';
+			}	
+		}
+		strcat(str, workBuffer);
+	    result = strtok( NULL, delims );
+		if (result)
+			strcat(str, " ");
+	}
+	free(workString);
+	free(workBuffer);
+	return str;
+}
+
 
 // !!!! This ONLY works where rep is longer than with
 char *str_replace(char *orig, const char *rep, const char *with)
