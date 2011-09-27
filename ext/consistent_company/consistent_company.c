@@ -18,6 +18,20 @@ static VALUE rb_ConsistentCompany_Init(VALUE self)
 static VALUE rb_CompanyNamer(VALUE self)
 {
 	char * pSelf = RSTRING_PTR(self);
+	int selfLen = strlen(pSelf)+2;
+	int workLen = selfLen;
+	char * s = pSelf;
+	
+	// calc size of work strings
+	// while processing we turn & = AND, + = PLUS
+	// and we add space at front and back
+	while (s = strpbrk(s, "&+"))
+	{	
+		workLen +=3; // worst case we add 3 chars
+		s++;
+	}
+	workLen += 2;	// add space front and back
+	//////////////
 	
 	// for company only
 	int i;
@@ -25,8 +39,8 @@ static VALUE rb_CompanyNamer(VALUE self)
 	int asc;
 	int numLefts = 0, numRights = 0;
 	int left1 = -1, right1 = -1, left2 = -1, right2 = -1;
-	char * workString = malloc(strlen(pSelf)+2);	// 2 extra chars for TransformCompany
-	char * returnString = malloc(strlen(pSelf)+2);
+	char * workString = malloc(workLen);	// 2 extra chars for TransformCompany
+	char * returnString = malloc(workLen);
 	char * inString;
 	strcpy(workString, pSelf);
 	inString = workString;
@@ -146,6 +160,12 @@ static VALUE rb_CompanyNamer(VALUE self)
 			strcat(returnString, " ");
 		}
 	}
+	// if (strlen(workString) > workLen || strlen(returnString) > workLen)
+	// {
+	// 	char buff[200];
+	// 	sprintf(buff, "workLen %d %s workString %d returnString %d %s", workLen, pSelf, strlen(workString), strlen(returnString), returnString);
+	// 	return rb_str_new2(trimwhitespace(buff));
+	// }
 	char * p;
 	str_replace(returnString, " AND ", " & ");
 	returnString = trimwhitespace(returnString);
@@ -166,7 +186,7 @@ FIRST FEDERAL SAVINGS becomes 1ST FEDERAL SAVINGS
 char * TransformCompany(char * resultString)
 {
 	// resultString should have been allocated with 2 extra char for our padding here
-	char * buf = malloc(strlen(resultString));
+	char * buf = malloc(strlen(resultString)+3);
 	strcpy(buf, " ");
 	strcat(buf,resultString);
 	strcat(buf, " ");
@@ -247,7 +267,7 @@ char * TransformCompany(char * resultString)
 		//spaceLoc = resultString.LastIndexOf(" ");
 		if (spaceLoc)  // Look at the last word
 		{
-			char * lastWord = malloc(strlen(spaceLoc));
+			char * lastWord = malloc(strlen(spaceLoc)+1);
 			strcpy(lastWord, spaceLoc + 1);
 			if (IsCompanyWord(lastWord))
 			{
