@@ -169,7 +169,9 @@ static VALUE rb_CompanyNamer(VALUE self)
 	// }
 	char * p;
 	str_replace(returnString, " AND ", " & ");
-//	returnString = trimsuffix(returnString, "s");
+	
+	int oldLen = strlen(returnString);
+//	returnString = trimsuffix(returnString, "s");	
 	returnString = trimwhitespace(returnString);
 	strcpy(returnString, TransformCompany(returnString));
 	VALUE return_value = rb_str_new2(trimwhitespace(returnString));
@@ -225,6 +227,10 @@ char * TransformCompany(char * resultString)
 	str_replace(s, " TENTH ", " 10TH ");
 	str_replace(s, " CENTRE ", " CTR ");
 	str_replace(s, " CENTER ", " CTR ");
+	str_replace(s, " CNTR ", " CTR ");
+	str_replace(s, " CTR ", " CTR ");
+	str_replace(s, " CENT ", " CTR ");
+	str_replace(s, " CENTR ", " CTR ");
 	str_replace(s, " AUTOMOTIVE ", " AUTO ");
 	str_replace(s, " AUTOMOBILE ", " AUTO ");
 	str_replace(s, " AUTOS ", " AUTO ");
@@ -381,21 +387,6 @@ char *trimwhitespace(char *str)
 
   return str;
 }
-// 
-// char *trimsuffix(char *str, const char *suffix)
-// {
-// 	char *s = str;
-// 	int len = strlen(suffix);
-// 	while (s=strstr(s, " "))
-// 	{
-// 		if (s != str && s - str > 3 && *(s-1) == 's' )
-// 		{
-// 			*(s-1) = ' ';
-// 		}
-// 		s++;
-// 	}
-// 	return str;
-// }
 
 char *trimsuffix(char *str, const char *suffix)
 {
@@ -412,9 +403,16 @@ char *trimsuffix(char *str, const char *suffix)
 		int len = strlen(workBuffer);
 		if (len > 3)
 		{
-			if (workBuffer[len-1] == 'S' && strcmp(workBuffer, "PLUS") != 0)
+			if (workBuffer[len-1] == 'S')
 			{
-				workBuffer[len-1] = '\0';
+				char * p = strstr(workBuffer, "IES");
+				if (p && p[3] == '\0' && strcmp(workBuffer, "SERIES") != 0)
+				{
+					*p = 'Y';
+					*++p = '\0';
+				}
+				if (strcmp(workBuffer, "PLUS") != 0)
+					workBuffer[len-1] = '\0';
 			}	
 		}
 		strcat(str, workBuffer);
