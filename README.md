@@ -6,6 +6,8 @@ This was written with the Adverting domain in mind. So many of the common advert
 handled well. Although it can work with other domains you may find need to enhance the specific company name 
 identifiers in IsCompanyName and TransformCompany.
 
+Tested with over 600,000 names from 100's of sources where an overlap of names is expected with a match rate of 40%.
+
 ## Install:
 gem install consistent_company
 
