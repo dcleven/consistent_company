@@ -1,6 +1,7 @@
 Makefile
 *.[oa]
 tmp/
+*.json
 
 # rcov generated
 coverage
