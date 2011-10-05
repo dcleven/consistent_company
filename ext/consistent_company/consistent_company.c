@@ -6,9 +6,9 @@
 
 char * TransformCompany(char * inString);
 static int IsCompanyWord(char * inWord);
-char *trimwhitespace(char *str);
-char *trimsuffix(char *str, const char *suffix);
-char *str_replace(char *orig, const char *rep, const char *with);
+char * trimwhitespace(char *str);
+char * trimsuffix(char *str, const char *suffix);
+char * str_replace(char *orig, const char *rep, const char *with);
 
 static VALUE rb_ConsistentCompany_Init(VALUE self)
 {
@@ -22,6 +22,9 @@ static VALUE rb_CompanyNamer(VALUE self)
 	int selfLen = strlen(pSelf)+2;
 	int workLen = selfLen;
 	char * s = pSelf;
+	if (*pSelf == '\0')
+		return self;
+		
 	
 	// calc size of work strings
 	// while processing we turn & = AND, + = PLUS
@@ -31,7 +34,7 @@ static VALUE rb_CompanyNamer(VALUE self)
 		workLen +=3; // worst case we add 3 chars
 		s++;
 	}
-	workLen += 2;	// add space front and back
+	workLen += 90;	// add space front and back
 	//////////////
 	
 	// for company only
@@ -79,7 +82,7 @@ static VALUE rb_CompanyNamer(VALUE self)
 		{
 			// ..(xx)..
 			inString[left1++] = ' ';
-			strcpy(&inString[left1], &inString[right1+1]);		
+			memmove(&inString[left1], &inString[right1+1], strlen(inString+right1+1)+1);		
 		}
 		else
 			// ..(xx
@@ -91,21 +94,21 @@ static VALUE rb_CompanyNamer(VALUE self)
 		{
 			// ..(xx)..(xx)..
 			inString[left1] = ' ';
-			strncpy(inString + left1 + 1, inString + right1 + 1, left2-right1-1);
+			memmove(inString + left1 + 1, inString + right1 + 1, left2-right1-1);
 			inString[left1+1+left2-right1-1]  = ' ';
-			strcpy(inString+left1+1+left2-right1, inString + right2+1);
+			memmove(inString+left1+1+left2-right1, inString + right2+1, strlen(inString+right2+1)+1);
 		}
 		else if ((left1 < left2) && (left2 < right1) && (right1 < right2))
 		{
 			// ..(xx(xx)xx)..
 			inString[left1] = ' ';
-			strcpy(inString+left1+1, inString+right2+1);
+			memmove(inString+left1+1, inString+right2+1, strlen(inString+right2+1)+1);
 		}
 		else if ((left1 < right1) && (right1 < left2) && (right2 == -1))
 		{
 			// ..(xx)..(xx
 			inString[left1] = ' ';
-			strncpy(inString+left1+1, inString+right1+1, left2-right1-1);
+			memmove(inString+left1+1, inString+right1+1, left2-right1-1);
 			inString[left1+1+left2-right1] = '\0';
 		}
 		else if ((left1 < left2) && (left2 < right1) && (right2 == -1))
@@ -173,7 +176,13 @@ static VALUE rb_CompanyNamer(VALUE self)
 	int oldLen = strlen(returnString);
 //	returnString = trimsuffix(returnString, "s");	
 	returnString = trimwhitespace(returnString);
-	strcpy(returnString, TransformCompany(returnString));
+	returnString = TransformCompany(returnString);
+	
+	//DEBUG HERE
+	// if (ss != returnString)
+	// 	sprintf(returnString, "expcted: %ld actual:%ld", returnString, ss);
+	//
+	
 	VALUE return_value = rb_str_new2(trimwhitespace(returnString));
 	free(returnString);
 	free(workString);
@@ -190,16 +199,15 @@ FIRST FEDERAL SAVINGS becomes 1ST FEDERAL SAVINGS
 char * TransformCompany(char * resultString)
 {
 	// resultString should have been allocated with 2 extra char for our padding here
-	char * buf = malloc(strlen(resultString)+3);
+	char * buf = malloc(strlen(resultString)+30);
 	strcpy(buf, " ");
 	strcat(buf,resultString);
 	strcat(buf, " ");
 	strcpy(resultString, buf);
 	free(buf);
-	
+
 	char * spaceLoc;
 	char * s = resultString;
-
 	str_replace(s, " THE ", " ");
 	str_replace(s, " ONE ", " 1 ");
 	str_replace(s, " TWO ", " 2 ");
@@ -255,7 +263,7 @@ char * TransformCompany(char * resultString)
 	str_replace(s, " MANAGEMENT ", " MGT ");
 	str_replace(s, " MGMT ", " MGT ");
 
-	s = trimwhitespace(s);
+	s = trimwhitespace(s);	
 	spaceLoc = strstr(s, " ");
 	//spaceLoc = resultString.IndexOf(" ");
 	if (spaceLoc && strlen(s) > 3) // More than one word and more than 3 chars
@@ -268,7 +276,7 @@ char * TransformCompany(char * resultString)
 			strncmp(s+3, " ", 1) != 0 &&
 			strstr(s, "PLUS") != s + 2)
 		{
-			strcpy(s, s+2);
+			memmove(s, s+2, strlen(s+2)+1);
 		}
 
 		spaceLoc = strrchr(s, ' ');
@@ -295,8 +303,7 @@ char * TransformCompany(char * resultString)
 		if (s[strlen(s)-1] == '&')
 			s[strlen(s)-1] = '\0';
 	}
-
-	str_replace(s, " ", "");
+	s = str_replace(s, " ", "");
 	return s;
 }
 
@@ -368,27 +375,30 @@ int IsCompanyWord(char * inWord)
 /*
 Trim whitespace from front and back of string
 */
-char *trimwhitespace(char *str)
+char * trimwhitespace(char *str)
 {
-  char *end;
+	char *end;
+	char *start = str;
+	// Trim leading space
+	while(isspace(*str)) str++;
 
-  // Trim leading space
-  while(isspace(*str)) str++;
+	if(*str == 0)  // All spaces?
+	{
+		*start = '\0';
+	  	return start;
+	}
+	// Trim trailing space
+	end = str + strlen(str) - 1;
+	while(end > str && isspace(*end)) end--;
 
-  if(*str == 0)  // All spaces?
-    return str;
-
-  // Trim trailing space
-  end = str + strlen(str) - 1;
-  while(end > str && isspace(*end)) end--;
-
-  // Write new null terminator
-  *(end+1) = 0;
-
-  return str;
+	// Write new null terminator
+	*(end+1) = 0;
+	memmove(start, str, strlen(str)+1);
+	
+	return start;
 }
 
-char *trimsuffix(char *str, const char *suffix)
+char * trimsuffix(char *str, const char *suffix)
 {
 	char delims[] = " ";
 	char *result = NULL;
@@ -427,13 +437,13 @@ char *trimsuffix(char *str, const char *suffix)
 
 
 // !!!! This ONLY works where rep is longer than with
-char *str_replace(char *orig, const char *rep, const char *with)
+char * str_replace(char *orig, const char *rep, const char *with)
 {
 	char * s = orig;
 	while (s=strstr(s, rep))
 	{
-		strncpy(s, with, strlen(with));
-		strcpy(s+strlen(with), s+strlen(rep));
+		memmove(s, with, strlen(with));
+		memmove(s+strlen(with), s+strlen(rep), strlen(s+strlen(rep))+1);
 		s = s + strlen(with)-1;
 	}
 	return orig;

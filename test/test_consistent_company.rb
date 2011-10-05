@@ -9,6 +9,10 @@ class TestConsistentCompany < Test::Unit::TestCase
     str = ' my test '
     company = str.company_namer
     assert_equal(' my test ', str) 
+    # empty name
+    assert_equal("", "".company_namer)
+    assert_equal("", " ".company_namer)
+    assert_equal("", "___".company_namer)
     # remove leading and trailing space
     assert_equal('TEST', " test ".company_namer)
     # remove embedded space
@@ -21,8 +25,6 @@ class TestConsistentCompany < Test::Unit::TestCase
     assert_equal("AAA", "The AAA Company".company_namer)
     # remove punctuation
     assert_equal("TESTERS", %q{The, ?%^* tester's company!}.company_namer)
-    # empty name
-    assert_equal("", "".company_namer)
     # a very long name
     assert_equal("A"*1000+"NAMEISHERE", (" A"*1000 + 'NAME IS HERE ').company_namer)
     # parenthesis matching
