@@ -7,7 +7,6 @@
 char * TransformCompany(char * inString);
 static int IsCompanyWord(char * inWord);
 char * trimwhitespace(char *str);
-char * trimsuffix(char *str, const char *suffix);
 char * str_replace(char *orig, const char *rep, const char *with);
 
 static VALUE rb_ConsistentCompany_Init(VALUE self)
@@ -19,13 +18,12 @@ static VALUE rb_ConsistentCompany_Init(VALUE self)
 static VALUE rb_CompanyNamer(VALUE self)
 {
 	char * pSelf = RSTRING_PTR(self);
-	int selfLen = strlen(pSelf)+2;
-	int workLen = selfLen;
+	int selfLen = (int)strlen(pSelf)+2;
+	int workLen = (int)selfLen;
 	char * s = pSelf;
 	if (*pSelf == '\0')
 		return self;
-		
-	
+			
 	// calc size of work strings
 	// while processing we turn & = AND, + = PLUS
 	// and we add space at front and back
@@ -53,7 +51,7 @@ static VALUE rb_CompanyNamer(VALUE self)
 		inString[i] = toupper( inString[i] );
 	
 	inString = trimwhitespace(inString);
-	unsigned long len = strlen(inString);
+	int len = (int)strlen(inString);
 	for (i = 0; i < len; i++)
 	{
 		if (inString[i] == '(')
@@ -125,7 +123,7 @@ static VALUE rb_CompanyNamer(VALUE self)
 	char singleCharStr[2];
 	singleCharStr[1] = '\0';
 	returnString[0] = '\0';
-	for (i = 0; i < strlen(inString); i++)
+	for (i = 0; i < (int)strlen(inString); i++)
 	{
 		ch = inString[i];
 		asc = (int)ch;
@@ -164,25 +162,11 @@ static VALUE rb_CompanyNamer(VALUE self)
 			strcat(returnString, " ");
 		}
 	}
-	// if (strlen(workString) > workLen || strlen(returnString) > workLen)
-	// {
-	// 	char buff[200];
-	// 	sprintf(buff, "workLen %d %s workString %d returnString %d %s", workLen, pSelf, strlen(workString), strlen(returnString), returnString);
-	// 	return rb_str_new2(trimwhitespace(buff));
-	// }
-	char * p;
+	
 	str_replace(returnString, " AND ", " & ");
 	
-	int oldLen = strlen(returnString);
-//	returnString = trimsuffix(returnString, "s");	
 	returnString = trimwhitespace(returnString);
 	returnString = TransformCompany(returnString);
-	
-	//DEBUG HERE
-	// if (ss != returnString)
-	// 	sprintf(returnString, "expcted: %ld actual:%ld", returnString, ss);
-	//
-	
 	VALUE return_value = rb_str_new2(trimwhitespace(returnString));
 	free(returnString);
 	free(workString);
@@ -236,7 +220,6 @@ char * TransformCompany(char * resultString)
 	str_replace(s, " CENTRE ", " CTR ");
 	str_replace(s, " CENTER ", " CTR ");
 	str_replace(s, " CNTR ", " CTR ");
-	str_replace(s, " CTR ", " CTR ");
 	str_replace(s, " CENT ", " CTR ");
 	str_replace(s, " CENTR ", " CTR ");
 	str_replace(s, " AUTOMOTIVE ", " AUTO ");
@@ -259,7 +242,8 @@ char * TransformCompany(char * resultString)
 	str_replace(s, " INTERNATIONAL ", " INT ");
 	str_replace(s, " INTERNATION ", " INT ");
 	str_replace(s, " INTL ", " INT ");
-	str_replace(s, " MARKETING ", " MKTG ");
+	str_replace(s, " MARKETING ", " MKT ");
+	str_replace(s, " MKTG ", " MKT ");
 	str_replace(s, " MANAGEMENT ", " MGT ");
 	str_replace(s, " MGMT ", " MGT ");
 
@@ -291,6 +275,8 @@ char * TransformCompany(char * resultString)
 				spaceLoc = strrchr(s, ' ');
 				if (spaceLoc)  // Look at the new last word
 				{
+					free(lastWord);
+					lastWord = malloc(strlen(spaceLoc)+1);
 					strcpy(lastWord, spaceLoc + 1);
 					if (IsCompanyWord(lastWord))
 					{
@@ -374,6 +360,8 @@ int IsCompanyWord(char * inWord)
 
 /*
 Trim whitespace from front and back of string
+return the same ptr as received, move the non-whitespace chars
+to the front and trim the end with \0
 */
 char * trimwhitespace(char *str)
 {
@@ -396,43 +384,6 @@ char * trimwhitespace(char *str)
 	memmove(start, str, strlen(str)+1);
 	
 	return start;
-}
-
-char * trimsuffix(char *str, const char *suffix)
-{
-	char delims[] = " ";
-	char *result = NULL;
-	char *workString = malloc(strlen(str)+3);
-	char *workBuffer = malloc(strlen(str)+3);
-	strcpy(workString, str);
-	str[0] = '\0';
-	result = strtok(workString, delims);
-	while(result != NULL) 
-	{
-		strcpy(workBuffer, result);
-		int len = strlen(workBuffer);
-		if (len > 3)
-		{
-			if (workBuffer[len-1] == 'S')
-			{
-				char * p = strstr(workBuffer, "IES");
-				if (p && p[3] == '\0' && strcmp(workBuffer, "SERIES") != 0)
-				{
-					*p = 'Y';
-					*++p = '\0';
-				}
-				if (strcmp(workBuffer, "PLUS") != 0)
-					workBuffer[len-1] = '\0';
-			}	
-		}
-		strcat(str, workBuffer);
-	    result = strtok( NULL, delims );
-		if (result)
-			strcat(str, " ");
-	}
-	free(workString);
-	free(workBuffer);
-	return str;
 }
 
 
