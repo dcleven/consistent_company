@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{consistent_company}
-  s.version = "0.0.5"
+  s.version = "0.0.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = [%q{Doug Cleven}]
-  s.date = %q{2011-10-06}
+  s.date = %q{2012-09-12}
   s.description = %q{Ruby C Extension to normalize a company name. Useful when company names come from various sources.}
   s.email = %q{dcleven@marketron.com}
   s.extensions = [%q{ext/consistent_company/extconf.rb}]
