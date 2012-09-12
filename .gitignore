@@ -3,6 +3,8 @@ Makefile
 tmp/
 *.json
 
+*.json
+
 # rcov generated
 coverage
 

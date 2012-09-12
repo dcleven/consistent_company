@@ -29,7 +29,6 @@ Gem::Specification.new do |s|
     "ext/consistent_company/consistent_company.c",
     "ext/consistent_company/extconf.rb",
     "lib/consistent_company.rb",
-    "lib/consistent_company/consistent_company.bundle",
     "lib/consistent_company/version.rb",
     "test/helper.rb",
     "test/test_consistent_company.rb"
