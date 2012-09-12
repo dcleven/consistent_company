@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{consistent_company}
-  s.version = "0.0.3"
+  s.version = "0.0.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = [%q{Doug Cleven}]
@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
     "ext/consistent_company/consistent_company.c",
     "ext/consistent_company/extconf.rb",
     "lib/consistent_company.rb",
+    "lib/consistent_company/consistent_company.bundle",
     "lib/consistent_company/version.rb",
     "test/helper.rb",
     "test/test_consistent_company.rb"
