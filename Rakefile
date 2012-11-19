@@ -31,7 +31,8 @@ Jeweler::Tasks.new do |gem|
   gem.email = "dcleven@marketron.com"
   gem.authors = ["Doug Cleven"]
   gem.version = ConsistentCompany::Version::STRING
-  gem.files.include('lib/consistent_company/*') # add native stuff
+  gem.extensions = ["ext/consistent_company/extconf.rb"]
+  gem.files = ["ext/consistent_company/consistent_company.c", "lib/consistent_company.rb", "lib/consistent_company/version.rb"] # add native stuff
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new

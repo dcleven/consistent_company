@@ -18,22 +18,9 @@ Gem::Specification.new do |s|
     "README.md"
   ]
   s.files = [
-    ".document",
-    ".rvmrc",
-    "Gemfile",
-    "Gemfile.lock",
-    "LICENSE.txt",
-    "README.md",
-    "Rakefile",
-    "VERSION",
-    "consistent_company.gemspec",
     "ext/consistent_company/consistent_company.c",
-    "ext/consistent_company/extconf.rb",
     "lib/consistent_company.rb",
-    "lib/consistent_company/consistent_company.bundle",
-    "lib/consistent_company/version.rb",
-    "test/helper.rb",
-    "test/test_consistent_company.rb"
+    "lib/consistent_company/version.rb"
   ]
   s.homepage = "http://github.com/dcleven/consistent_company"
   s.licenses = ["MIT"]
@@ -45,27 +32,12 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<shoulda>, [">= 0"])
-      s.add_development_dependency(%q<bundler>, ["~> 1.0.18"])
-      s.add_development_dependency(%q<jeweler>, ["~> 1.6.4"])
-      s.add_development_dependency(%q<rcov>, [">= 0"])
-      s.add_development_dependency(%q<pry>, [">= 0"])
-      s.add_development_dependency(%q<rake-compiler>, ["~> 0.7.6"])
+      s.add_runtime_dependency(%q<consistent_company>, [">= 0"])
     else
-      s.add_dependency(%q<shoulda>, [">= 0"])
-      s.add_dependency(%q<bundler>, ["~> 1.0.18"])
-      s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
-      s.add_dependency(%q<rcov>, [">= 0"])
-      s.add_dependency(%q<pry>, [">= 0"])
-      s.add_dependency(%q<rake-compiler>, ["~> 0.7.6"])
+      s.add_dependency(%q<consistent_company>, [">= 0"])
     end
   else
-    s.add_dependency(%q<shoulda>, [">= 0"])
-    s.add_dependency(%q<bundler>, ["~> 1.0.18"])
-    s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
-    s.add_dependency(%q<rcov>, [">= 0"])
-    s.add_dependency(%q<pry>, [">= 0"])
-    s.add_dependency(%q<rake-compiler>, ["~> 0.7.6"])
+    s.add_dependency(%q<consistent_company>, [">= 0"])
   end
 end
 

@@ -1,3 +1,9 @@
+PATH
+  remote: .
+  specs:
+    consistent_company (0.0.7)
+      consistent_company
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -28,7 +34,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (~> 1.0.18)
+  bundler (~> 1.2)
+  consistent_company!
   jeweler (~> 1.6.4)
   pry
   rake-compiler (~> 0.7.6)
