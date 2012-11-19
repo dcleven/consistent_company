@@ -4,21 +4,22 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{consistent_company}
+  s.name = "consistent_company"
   s.version = "0.0.7"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = [%q{Doug Cleven}]
-  s.date = %q{2012-09-12}
-  s.description = %q{Ruby C Extension to normalize a company name. Useful when company names come from various sources.}
-  s.email = %q{dcleven@marketron.com}
-  s.extensions = [%q{ext/consistent_company/extconf.rb}]
+  s.authors = ["Doug Cleven"]
+  s.date = "2012-11-19"
+  s.description = "Ruby C Extension to normalize a company name. Useful when company names come from various sources."
+  s.email = "dcleven@marketron.com"
+  s.extensions = ["ext/consistent_company/extconf.rb"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.md"
   ]
   s.files = [
     ".document",
+    ".rvmrc",
     "Gemfile",
     "Gemfile.lock",
     "LICENSE.txt",
@@ -29,15 +30,16 @@ Gem::Specification.new do |s|
     "ext/consistent_company/consistent_company.c",
     "ext/consistent_company/extconf.rb",
     "lib/consistent_company.rb",
+    "lib/consistent_company/consistent_company.bundle",
     "lib/consistent_company/version.rb",
     "test/helper.rb",
     "test/test_consistent_company.rb"
   ]
-  s.homepage = %q{http://github.com/dcleven/consistent_company}
-  s.licenses = [%q{MIT}]
-  s.require_paths = [%q{lib}]
-  s.rubygems_version = %q{1.8.6}
-  s.summary = %q{Normalize a company name for consistent matching}
+  s.homepage = "http://github.com/dcleven/consistent_company"
+  s.licenses = ["MIT"]
+  s.require_paths = ["lib"]
+  s.rubygems_version = "1.8.24"
+  s.summary = "Normalize a company name for consistent matching"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
