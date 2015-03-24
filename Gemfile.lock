@@ -1,43 +1,19 @@
-PATH
-  remote: .
-  specs:
-    consistent_company (0.0.7)
-      consistent_company
-
 GEM
   remote: http://rubygems.org/
   specs:
-    coderay (0.9.8)
-    git (1.2.5)
+    git (1.2.9.1)
     jeweler (1.6.4)
       bundler (~> 1.0)
       git (>= 1.2.5)
       rake
-    method_source (0.6.5)
-      ruby_parser (>= 2.0.5)
-    pry (0.9.5)
-      coderay (>= 0.9.8)
-      method_source (>= 0.6.5)
-      ruby_parser (>= 2.0.5)
-      slop (~> 2.1.0)
-    rake (0.9.2)
-    rake-compiler (0.7.6)
+    rake (10.4.2)
+    rake-compiler (0.7.9)
       rake
-    rcov (0.9.10)
-    ruby_parser (2.3.0)
-      sexp_processor (~> 3.0)
-    sexp_processor (3.0.6)
-    shoulda (2.11.3)
-    slop (2.1.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   bundler (~> 1.2)
-  consistent_company!
   jeweler (~> 1.6.4)
-  pry
   rake-compiler (~> 0.7.6)
-  rcov
-  shoulda

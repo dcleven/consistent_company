@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Doug Cleven"]
-  s.date = "2012-11-19"
+  s.date = "2015-03-24"
   s.description = "Ruby C Extension to normalize a company name. Useful when company names come from various sources."
   s.email = "dcleven@marketron.com"
   s.extensions = ["ext/consistent_company/extconf.rb"]
@@ -33,11 +33,20 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<consistent_company>, [">= 0"])
+      s.add_runtime_dependency(%q<bundler>, ["~> 1.2"])
+      s.add_runtime_dependency(%q<jeweler>, ["~> 1.6.4"])
+      s.add_runtime_dependency(%q<rake-compiler>, ["~> 0.7.6"])
     else
       s.add_dependency(%q<consistent_company>, [">= 0"])
+      s.add_dependency(%q<bundler>, ["~> 1.2"])
+      s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
+      s.add_dependency(%q<rake-compiler>, ["~> 0.7.6"])
     end
   else
     s.add_dependency(%q<consistent_company>, [">= 0"])
+    s.add_dependency(%q<bundler>, ["~> 1.2"])
+    s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
+    s.add_dependency(%q<rake-compiler>, ["~> 0.7.6"])
   end
 end
 
