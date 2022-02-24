@@ -27,7 +27,7 @@ static VALUE rb_CompanyNamer(VALUE self)
 	// calc size of work strings
 	// while processing we turn & = AND, + = PLUS
 	// and we add space at front and back
-	while (s = strpbrk(s, "&+"))
+	while ((s = strpbrk(s, "&+")))
 	{	
 		workLen +=3; // worst case we add 3 chars
 		s++;
@@ -393,7 +393,7 @@ char * trimwhitespace(char *str)
 char * str_replace(char *orig, const char *rep, const char *with)
 {
 	char * s = orig;
-	while (s=strstr(s, rep))
+	while ((s=strstr(s, rep)))
 	{
 		memmove(s, with, strlen(with));
 		memmove(s+strlen(with), s+strlen(rep), strlen(s+strlen(rep))+1);

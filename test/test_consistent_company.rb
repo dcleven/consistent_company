@@ -1,8 +1,9 @@
 require 'helper'
 require 'consistent_company'
-require 'pry'
+#require 'pry'
+require 'minitest/autorun'
 
-class TestConsistentCompany < Test::Unit::TestCase
+class TestConsistentCompany < Minitest::Test
 
   def test_company_namer
     # don't change the calling string
