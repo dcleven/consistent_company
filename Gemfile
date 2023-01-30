@@ -6,6 +6,6 @@ group :test do
 end
 
 group :development do
-  gem "jeweler", ">= 1.6.4"
+  gem "jeweler", "~>2.3.9"
   gem "rake-compiler", ">= 0.7.6"
 end

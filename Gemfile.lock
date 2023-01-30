@@ -64,7 +64,7 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (>= 1.2)
-  jeweler (>= 1.6.4)
+  jeweler (~> 2.3.9)
   minitest
   rake-compiler (>= 0.7.6)
 
